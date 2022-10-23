@@ -141,4 +141,15 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+javascript/**/migrations/
+typescript/**/migrations/
+misc/**/migrations/
+databases/**/migrations/
+experimental/**/*.db
+.next
+.vscode/
+.nuxt
+dev.db
+*.env*
+
 # End of https://www.toptal.com/developers/gitignore/api/node
