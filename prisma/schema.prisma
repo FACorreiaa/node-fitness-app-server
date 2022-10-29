@@ -12,34 +12,65 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  nickname  String     @unique
-  password  String
-  firstname String?
-  lastname  String?
-  gender    String
-  profile   Profile?
-  mealplan  Mealplan[]
+  id           Int            @id @default(autoincrement())
+  firstname    String?
+  lastname     String?
+  gender       String
+  profile      Profile?
+  mealplan     Mealplan[]
+  exercisePlan ExercisePlan[]
+  UserLogin    UserLogin?
+}
+
+model UserLogin {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  nickname String @unique
+  password String
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int    @unique
 }
 
 model Profile {
   id         Int     @id @default(autoincrement())
   bio        String?
   profession String?
-  //WIP
   user       User    @relation(fields: [userId], references: [id])
   userId     Int     @unique
 }
 
 model Mealplan {
-  id        Int      @id @default(autoincrement())
-  name      String
-  type      String
-  content   String //WIP TO CHANGE LATER
-  createdAt DateTime @default(now())
-  updated   DateTime @updatedAt
-  active    Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id         Int      @id @default(autoincrement())
+  name       String
+  type       String
+  meallist   MealList @relation(fields: [mealListId], references: [id])
+  createdAt  DateTime @default(now())
+  updated    DateTime @updatedAt
+  active     Boolean  @default(false)
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   Int
+  mealListId Int
+}
+
+model MealList {
+  id       Int        @id @default(autoincrement())
+  Mealplan Mealplan[]
+}
+
+model ExercisePlan {
+  id             Int          @id @default(autoincrement())
+  name           String
+  type           String
+  exerciselist   ExerciseList @relation(fields: [exerciseListId], references: [id])
+  createdAt      DateTime     @default(now())
+  updated        DateTime     @updatedAt
+  active         Boolean      @default(false)
+  author         User         @relation(fields: [authorId], references: [id])
+  authorId       Int
+  exerciseListId Int
+}
+
+model ExerciseList {
+  id           Int            @id @default(autoincrement())
+  ExercisePlan ExercisePlan[]
 }
