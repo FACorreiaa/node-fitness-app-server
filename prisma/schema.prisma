@@ -12,14 +12,15 @@ datasource db {
 }
 
 model User {
-  id           Int            @id @default(autoincrement())
-  firstname    String?
-  lastname     String?
-  gender       String
-  profile      Profile?
-  mealplan     Mealplan[]
-  exercisePlan ExercisePlan[]
-  UserLogin    UserLogin?
+  id            Int            @id @default(autoincrement())
+  first_name    String?
+  last_name     String?
+  gender        String
+  profile       Profile?
+  mealplan      Mealplan[]
+  exercise_plan ExercisePlan[]
+  UserLogin     UserLogin?
+  UserBioData   UserBioData?
 }
 
 model UserLogin {
@@ -39,13 +40,23 @@ model Profile {
   userId     Int     @unique
 }
 
+model UserBioData {
+  id          Int  @id @default(autoincrement())
+  weight      Int?
+  waist_width Int?
+  leg_width   Int?
+  chest_wdith Int?
+  user        User @relation(fields: [userId], references: [id])
+  userId      Int  @unique
+}
+
 model Mealplan {
   id         Int      @id @default(autoincrement())
   name       String
   type       String
-  meallist   MealList @relation(fields: [mealListId], references: [id])
-  createdAt  DateTime @default(now())
-  updated    DateTime @updatedAt
+  meal_list  MealList @relation(fields: [mealListId], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   active     Boolean  @default(false)
   author     User     @relation(fields: [authorId], references: [id])
   authorId   Int
@@ -53,16 +64,46 @@ model Mealplan {
 }
 
 model MealList {
-  id       Int        @id @default(autoincrement())
-  Mealplan Mealplan[]
+  id        Int               @id @default(autoincrement())
+  meal_plan Mealplan[]
+  quantity  Int
+  meals     MealComposition[]
+}
+
+model MealComposition {
+  id Int @id @default(autoincrement())
+
+  MealList    MealList?     @relation(fields: [mealListId], references: [id])
+  mealListId  Int?
+  ingredients Ingredients[]
+}
+
+model Ingredients {
+  id                Int              @id @default(autoincrement())
+  ingredients_name  String
+  macros            Macros[]
+  MealComposition   MealComposition? @relation(fields: [mealCompositionId], references: [id])
+  mealCompositionId Int?
+}
+
+model Macros {
+  id            Int          @id @default(autoincrement())
+  name          String
+  quantity      Int
+  calories      Int
+  protein       Int
+  carbs         Int
+  fats          Int
+  Ingredients   Ingredients? @relation(fields: [ingredientsId], references: [id])
+  ingredientsId Int?
 }
 
 model ExercisePlan {
   id             Int          @id @default(autoincrement())
   name           String
   type           String
-  exerciselist   ExerciseList @relation(fields: [exerciseListId], references: [id])
-  createdAt      DateTime     @default(now())
+  exercise_list  ExerciseList @relation(fields: [exerciseListId], references: [id])
+  created_at     DateTime     @default(now())
   updated        DateTime     @updatedAt
   active         Boolean      @default(false)
   author         User         @relation(fields: [authorId], references: [id])
@@ -71,6 +112,32 @@ model ExercisePlan {
 }
 
 model ExerciseList {
-  id           Int            @id @default(autoincrement())
+  id           Int                   @id @default(autoincrement())
   ExercisePlan ExercisePlan[]
+  quantity     Int
+  exercises    ExerciseComposition[]
+}
+
+model ExerciseComposition {
+  id             Int           @id @default(autoincrement())
+  Exercises      Exercises[]
+  ExerciseList   ExerciseList? @relation(fields: [exerciseListId], references: [id])
+  exerciseListId Int?
+}
+
+model Exercises {
+  id                    Int                  @id @default(autoincrement())
+  exercise_name         String
+  exercises_period      ExercisesPeriod[]
+  ExerciseComposition   ExerciseComposition? @relation(fields: [exerciseCompositionId], references: [id])
+  exerciseCompositionId Int?
+}
+
+model ExercisesPeriod {
+  id          Int        @id @default(autoincrement())
+  name        String
+  series      Int
+  reps        Int
+  Exercises   Exercises? @relation(fields: [exercisesId], references: [id])
+  exercisesId Int?
 }
