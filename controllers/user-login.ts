@@ -7,26 +7,17 @@ app.use(express.json())
 
 export const createNewUser = async (req: Request, res: Response) => {
   try {
-    const { email, nickname, password, firstname, lastname, gender } = req.body
+    const { email, nickname, password, first_name, last_name, gender } = req.body
     debugger
-    console.log('firstname', firstname)
-    console.log('req', req)
     let newUser: Prisma.UserCreateInput
     newUser = {
-      first_name: firstname,
-      last_name: lastname,
-      nickname: nickname,
-      email: email,
-      password: password,
-      gender: gender,
-      profile: {},
-      mealplan: {},
-      exercise_plan: {},
-      userBioData: {}
-
-
+      first_name,
+      last_name,
+      nickname,
+      email,
+      password,
+      gender
     }
-    console.log('newUser', newUser)
     const createUser = await prisma.user.create({
       data: newUser
     })
@@ -37,7 +28,6 @@ export const createNewUser = async (req: Request, res: Response) => {
       payload: createUser,
     })
   } catch (error) {
-    console.log('errrrrrr', error)
     res.status(500).json({
       message: "Something went wrong",
     })
